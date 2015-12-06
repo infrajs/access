@@ -1,6 +1,14 @@
 {
 	"name": "infrajs/access",
 	"license": "GPL3",
+	"require":{
+		"infrajs/ans":"~1",
+		"infrajs/hash":"~1",
+		"infrajs/once":"~1",
+		"infrajs/mem":"~1",
+		"infrajs/cache":"~1",
+		"infrajs/view":"~1"
+	},
 	"autoload": {
 		"psr-4": { "infrajs\\access\\": "/" }
 	}

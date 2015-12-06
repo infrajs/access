@@ -1,17 +1,22 @@
 <?php
-namespace infrajs\infra;
-use infrajs\infra\Config;
+namespace infrajs\access;
 use infrajs\hash\Hash;
 use infrajs\once\Once;
 use infrajs\mem\Mem;
+use infrajs\cache\Cache;
 use infrajs\view\View;
 
 class Access {
+	public static $conf = array(
+		"test"=>array("127.0.0.1","::1"),
+		"debug"=>array("127.0.0.1","::1"),
+		"admin"=>array('login'=>"admin", 'password'=>"admin")
+	);
 	public static function isTest()
 	{
 		if (self::isDebug()) return true;
 
-		$conf = Config::get('infra');
+		$conf = static::$conf;
 		$ips = $conf['test'];
 		if (is_array($ips)) {
 			$is = in_array($_SERVER['REMOTE_ADDR'], $ips);
@@ -27,7 +32,7 @@ class Access {
 	{
 		if (self::isAdmin()) return true;
 
-		$conf = Config::get('infra');
+		$conf = static::$conf;
 		$ips = $conf['debug'];
 		if (is_array($ips)) {
 			$is = in_array($_SERVER['REMOTE_ADDR'], $ips);
@@ -41,7 +46,7 @@ class Access {
 	}
 	public static function test($die = false)
 	{
-		header('Cache-Control: no-store'); //no-store ключевое слово используемое в infra_cache
+		header('Cache-Control: no-store'); //no-store ключевое слово используемое в Cache::exec
 		$is = self::isTest();
 		if (!$die) return $is;
 		if ($is) return;
@@ -51,16 +56,13 @@ class Access {
 
 	public static function debug($die = false)
 	{
-		header('Cache-Control: no-store'); //no-store ключевое слово используемое в infra_cache
+		header('Cache-Control: no-store'); //no-store ключевое слово используемое в Cache::exec
 		$is = self::isDebug();
 		if ($is) self::adminSetTime();
-		if(!$die) return $is;
+		if (!$die) return $is;
 		if ($is) return;
 		header('HTTP/1.0 403 Forbidden');
 		die('{"msg":"Required config.infra.debug:['.$_SERVER['REMOTE_ADDR'].']"}');
-	}
-	public static function init() {
-		Config::initRequires();
 	}
 	public static function initHeaders() {
 		if (Access::isTest()) {
@@ -90,8 +92,8 @@ class Access {
 	 */
 	public static function isAdmin()
 	{
-		$data = Config::get();
-		$data = $data['admin'];
+		$conf = static::$conf;
+		$data = $conf['admin'];
 		$_ADM_NAME = $data['login'];
 		$_ADM_PASS = $data['password'];
 		if (empty($_SERVER['HTTP_USER_AGENT'])) {
@@ -103,22 +105,21 @@ class Access {
 		return ($key === $realkey);
 	}
 	/**
-	 * infra_admin(true) - пропускает только если ты администратор, иначе выкидывает окно авторизации
-	 * infra_admin(false) - пропускает только если ты НЕ администратор, иначе выкидывает окно авторизации
+	 * Access::admin(true) - пропускает только если ты администратор, иначе выкидывает окно авторизации
+	 * Access::admin(false) - пропускает только если ты НЕ администратор, иначе выкидывает окно авторизации
 	 * $ans выводится в json если нажать отмена
-	 * infra_admin(array('login','pass'));.
+	 * Access::admin(array('login','pass'));.
 	 */
 	public static function admin($break = null, $ans = array('msg' => 'Требуется авторизация', 'result' => 0))
 	{
-		$data = Config::get();
-		$data = $data['admin'];
+		$data = static::$conf['admin'];
 		$_ADM_NAME = $data['login'];
 		$_ADM_PASS = $data['password'];
 		$admin = null;//Неизвестно
 
 		$realkey = md5($_ADM_NAME.$_ADM_PASS.$_SERVER['HTTP_USER_AGENT'].$_SERVER['REMOTE_ADDR']);
 
-		header('Cache-Control: no-store'); //no-store ключевое слово используемое в infra_cache
+		header('Cache-Control: no-store'); //no-store ключевое слово используемое в Cache::exec
 		if (is_array($break)) {
 			$admin = ($break[0] === $_ADM_NAME && $break[1] === $_ADM_PASS);
 			if ($admin) {
@@ -157,11 +158,9 @@ class Access {
 		$adm = array('time' => $t);
 
 		Mem::set('infra_admin_time', $adm);
-	
 		Once::exec('infra_admin_time', $adm['time']);
 		return true;
 	}
-
 	/**
 	 * Отвечает на вопрос! Время настало для сложной обработки?
 	 * Функция стремится сказать что время ещё не пришло... и последней инстанцией будет выполнение фукции которая должна вернуть true или false
@@ -217,7 +216,7 @@ class Access {
 			}, $re);
 
 			if ($execute) {
-				$cache = infra_cache_check(function () use (&$data, $fn, $args, $re) {
+				$cache = Cache::check(function () use (&$data, $fn, $args, $re) {
 					$data['result'] = call_user_func_array($fn, array_merge($args, array($re)));
 				});
 				if ($cache) {
