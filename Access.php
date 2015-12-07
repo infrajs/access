@@ -5,6 +5,7 @@ use infrajs\once\Once;
 use infrajs\mem\Mem;
 use infrajs\cache\Cache;
 use infrajs\view\View;
+use infrajs\path\Path;
 
 class Access {
 	public static $conf = array(
@@ -92,6 +93,7 @@ class Access {
 	 */
 	public static function isAdmin()
 	{
+		if(!Path::theme('~.infra.json')) throw new \Exception('Для авторизации требуется создать конфигурационный файл ~.infra.json с данными {"admin": {"login":"admin", "password":"admin"}}');
 		$conf = static::$conf;
 		$data = $conf['admin'];
 		$_ADM_NAME = $data['login'];
