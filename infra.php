@@ -8,6 +8,6 @@ $conf=&Infra::config('access');
 Access::$conf=array_merge(Access::$conf, $conf);
 $conf=Access::$conf;
 
-Event::wheng('update', function () {
+Event::handler('install', function () {
 	Access::adminSetTime();
 });
