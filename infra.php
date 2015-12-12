@@ -10,4 +10,4 @@ $conf=Access::$conf;
 
 Event::handler('oninstall', function () {
 	Access::adminSetTime();
-});
+},'access:mem');
