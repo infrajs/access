@@ -52,7 +52,7 @@ class Access {
 		if (!$die) return $is;
 		if ($is) return;
 		header('HTTP/1.0 403 Forbidden');
-		die('{"msg":"Required config.infra.test:['.$_SERVER['REMOTE_ADDR'].']"}');
+		die('{"msg":"Required access.conf.test:['.$_SERVER['REMOTE_ADDR'].']"}');
 	}
 
 	public static function debug($die = false)

@@ -1,0 +1,5 @@
+{
+	"access":{
+		"require":"*access/infra.php"
+	}
+}

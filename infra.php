@@ -8,6 +8,6 @@ $conf=&Infra::config('access');
 Access::$conf=array_merge(Access::$conf, $conf);
 $conf=Access::$conf;
 
-Event::handler('install', function () {
+Event::handler('oninstall', function () {
 	Access::adminSetTime();
 });
