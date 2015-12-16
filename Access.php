@@ -93,7 +93,11 @@ class Access {
 	 */
 	public static function isAdmin()
 	{
-		if(!Path::theme('~.infra.json')) throw new \Exception('Для авторизации требуется создать конфигурационный файл ~.infra.json с данными {"admin": {"login":"admin", "password":"admin"}}');
+		if(!Path::theme('~.infra.json')) {
+			return false;
+			//echo '<pre>';
+			//throw new \Exception('Для авторизации требуется создать конфигурационный файл ~.infra.json с данными {"admin": {"login":"admin", "password":"admin"}}');
+		}
 		$conf = static::$conf;
 		$data = $conf['admin'];
 		$_ADM_NAME = $data['login'];
