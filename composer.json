@@ -6,7 +6,7 @@
 		"infrajs/hash":"~1",
 		"infrajs/once":"~1",
 		"infrajs/mem":"~1",
-		"infrajs/cache":"~1",
+		"infrajs/nostore":"~1",
 		"infrajs/view":"~1"
 	},
 	"autoload": {

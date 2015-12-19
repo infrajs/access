@@ -1,5 +1,13 @@
 {
-	"access":{
-		"require":"-access/infra.php"
+	"conf":"\\infrajs\\access\\Access",
+	"js":"access.js",
+	"require":"infra.php",
+	"test":["127.0.0.1","::1"],
+	"debug":["127.0.0.1","::1"],
+	"admin":{
+		"login":"admin", 
+		"password":"admin",
+		"email":"info@itlf.ru",
+		"support":"aky.pp.ru@gmail.com"
 	}
 }

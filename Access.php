@@ -3,7 +3,7 @@ namespace infrajs\access;
 use infrajs\hash\Hash;
 use infrajs\once\Once;
 use infrajs\mem\Mem;
-use infrajs\cache\Cache;
+use infrajs\nostore\Nostore;
 use infrajs\view\View;
 use infrajs\path\Path;
 
@@ -47,7 +47,7 @@ class Access {
 	}
 	public static function test($die = false)
 	{
-		header('Cache-Control: no-store'); //no-store ключевое слово используемое в Cache::exec
+		Nostore::on();
 		$is = self::isTest();
 		if (!$die) return $is;
 		if ($is) return;
@@ -57,7 +57,7 @@ class Access {
 
 	public static function debug($die = false)
 	{
-		header('Cache-Control: no-store'); //no-store ключевое слово используемое в Cache::exec
+		Nostore::on();
 		$is = self::isDebug();
 		if ($is) self::adminSetTime();
 		if (!$die) return $is;
@@ -125,7 +125,8 @@ class Access {
 
 		$realkey = md5($_ADM_NAME.$_ADM_PASS.$_SERVER['HTTP_USER_AGENT'].$_SERVER['REMOTE_ADDR']);
 
-		header('Cache-Control: no-store'); //no-store ключевое слово используемое в Cache::exec
+		Nostore::on();
+
 		if (is_array($break)) {
 			$admin = ($break[0] === $_ADM_NAME && $break[1] === $_ADM_PASS);
 			if ($admin) {
@@ -222,7 +223,7 @@ class Access {
 			}, $re);
 
 			if ($execute) {
-				$cache = Cache::check(function () use (&$data, $fn, $args, $re) {
+				$cache = !Nostore::check(function () use (&$data, $fn, $args, $re) {
 					$data['result'] = call_user_func_array($fn, array_merge($args, array($re)));
 				});
 				if ($cache) {
@@ -241,13 +242,17 @@ class Access {
 		//$v изменение которой должно создавать новую копию кэша
 		if (self::isDebug()) return;
 		
+
+
 		if ($etag) {
 			//Мы осознано включаем возможность кэшировать, даже если были запреты до этого! так ак есть Etag и в нём срыты эти неявные условия
 			//Таким образом отменяется обращение к базе даных, инициализация сессии и тп.
-			header('Cache-Control: no-cache'); //no-cache ключевое слово используемое в infra_cache
+			Nostore::off();
 		}
+
 		if (!empty($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
 			$last_modified = self::adminTime();
+			
 			/*
 				Warning: strtotime(): It is not safe to rely on the system's timezone settings. You are *required* to use the date.timezone setting or the date_default_timezone_set() function. In case you used any of those methods and you are still getting this warning, you most likely misspelled the timezone identifier. We selected the timezone 'UTC' for now, but please set date.timezone to select your timezone
 			*/
@@ -256,6 +261,12 @@ class Access {
 					//header('ETag: '.$etag);
 					//header('Last-Modified: '.$_SERVER['HTTP_IF_MODIFIED_SINCE']);
 					header('HTTP/1.0 304 Not Modified');
+
+					
+					
+					
+
+
 					exit;
 				}
 			}
