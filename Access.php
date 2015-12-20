@@ -65,27 +65,27 @@ class Access {
 		header('HTTP/1.0 403 Forbidden');
 		die('{"msg":"Required config.infra.debug:['.$_SERVER['REMOTE_ADDR'].']"}');
 	}
-	public static function initHeaders() {
+	public static function headers() {
 		if (Access::isTest()) {
 			error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
 			ini_set('display_errors', 1);
-			@header('Infra-Test:true');
+			@header('Infrajs-Test:true');
 		} else {
 			error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
-			@header('Infra-Test:false');
+			@header('Infrajs-Test:false');
 			ini_set('display_errors', 0);
 		}
 		if (Access::isDebug()) {
-			@header('Infra-Debug:true');
+			@header('Infrajs-Debug:true');
 			header('Cache-Control: no-store'); //Браузер не кэширует no-store.
 		} else {
-			@header('Infra-Debug:false');
+			@header('Infrajs-Debug:false');
 			header('Cache-Control: no-cache'); //Браузер кэширует, но проверяет каждый раз no-cache
 		}
 		if (Access::isAdmin()) {
-			@header('Infra-Admin:true');
+			@header('Infrajs-Admin:true');
 		} else {
-			@header('Infra-Admin:false');
+			@header('Infrajs-Admin:false');
 		}
 	}
 	/**
@@ -208,10 +208,10 @@ class Access {
 			return $adm['time'];
 		});
 	}
-	public static function adminCache($name, $fn, $args = array(), $re = false)
+	public static function cache($name, $fn, $args = array(), $re = false)
 	{
 		//Запускается один раз для админа, остальные разы возвращает кэш из памяти
-		$name = 'Access::adminCache '.$name;
+		$name = 'Access::cache '.$name;
 		return Once::exec($name, function ($args, $name) use ($name, $fn, $re) {
 			$path = $name.'_'.Hash::make($args);
 			$data = Mem::get($path);
@@ -237,7 +237,7 @@ class Access {
 			return $data['result'];
 		}, array($args, $name), $re);
 	}
-	public static function adminModified($etag = '')
+	public static function modified($etag = '')
 	{
 		//$v изменение которой должно создавать новую копию кэша
 		if (self::isDebug()) return;
