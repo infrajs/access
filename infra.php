@@ -1,7 +1,7 @@
 <?php
 namespace infrajs\access;
 
-use infrajs\infra\Config;
+use infrajs\config\Config;
 
 if(!Access::adminTime()){
 	Config::$install = true;
