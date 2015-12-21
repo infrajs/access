@@ -77,10 +77,9 @@ class Access {
 		}
 		if (Access::isDebug()) {
 			@header('Infrajs-Debug:true');
-			header('Cache-Control: no-store'); //Браузер не кэширует no-store.
+			Nostore::on(); //Браузер не кэширует no-store.
 		} else {
 			@header('Infrajs-Debug:false');
-			header('Cache-Control: no-cache'); //Браузер кэширует, но проверяет каждый раз no-cache
 		}
 		if (Access::isAdmin()) {
 			@header('Infrajs-Admin:true');
@@ -241,7 +240,6 @@ class Access {
 	{
 		//$v изменение которой должно создавать новую копию кэша
 		if (self::isDebug()) return;
-		
 
 
 		if ($etag) {
