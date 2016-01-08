@@ -33,6 +33,9 @@ class Access {
 	{
 		if (self::isAdmin()) return true;
 
+		
+		
+
 		$conf = static::$conf;
 		$ips = $conf['debug'];
 		if (is_array($ips)) {
@@ -42,13 +45,14 @@ class Access {
 		} else {
 			$is = !!$ips;
 		}
-
 		return $is;
 	}
+
 	public static function test($die = false)
 	{
-		Nostore::on();
+		
 		$is = self::isTest();
+		if ($is) Nostore::on();
 		if (!$die) return $is;
 		if ($is) return;
 		header('HTTP/1.0 403 Forbidden');
@@ -57,9 +61,11 @@ class Access {
 
 	public static function debug($die = false)
 	{
-		Nostore::on();
 		$is = self::isDebug();
-		if ($is) self::adminSetTime();
+		if ($is) {
+			Nostore::on();
+			//self::adminSetTime();
+		}
 		if (!$die) return $is;
 		if ($is) return;
 		header('HTTP/1.0 403 Forbidden');
@@ -83,6 +89,7 @@ class Access {
 		}
 		if (Access::isAdmin()) {
 			@header('Infrajs-Admin:true');
+			Access::adminSetTime();
 		} else {
 			@header('Infrajs-Admin:false');
 		}
@@ -124,9 +131,10 @@ class Access {
 
 		$realkey = md5($_ADM_NAME.$_ADM_PASS.$_SERVER['HTTP_USER_AGENT'].$_SERVER['REMOTE_ADDR']);
 
-		Nostore::on();
+		
 
 		if (is_array($break)) {
+			Nostore::on();
 			$admin = ($break[0] === $_ADM_NAME && $break[1] === $_ADM_PASS);
 			if ($admin) {
 				View::setCookie('infra_admin', $realkey);
@@ -137,9 +145,11 @@ class Access {
 			$key = View::getCookie('infra_admin');
 			$admin = ($key === $realkey);
 			if ($break === false) {
+				Nostore::on();
 				View::setCookie('infra_admin');
 				$admin = false;
 			} elseif ($break === true && !$admin) {
+				Nostore::on();
 				$admin = (@$_SERVER['PHP_AUTH_USER'] == $_ADM_NAME && @$_SERVER['PHP_AUTH_PW'] == $_ADM_PASS);
 				if ($admin) {
 					View::setCookie('infra_admin', $realkey);
@@ -151,21 +161,16 @@ class Access {
 				}
 			}
 		}
-
-		if ($admin) {
-			static::adminSetTime();
-		}
-
 		return $admin;
 	}
 	public static function adminSetTime($t = null)
 	{
-		if (is_null($t)) $t = time();
-		$adm = array('time' => $t);
-
-		Mem::set('infra_admin_time', $adm);
-		Once::exec('infra_admin_time', $adm['time']);
-		return true;
+		Once::exec('Infrajs::Access::adminSetTime', function(){
+			if (is_null($t)) $t = time();
+			$adm = array('time' => $t);
+			Mem::set('infra_admin_time', $adm);
+			Once::exec('infra_admin_time', $adm['time']);
+		});
 	}
 	/**
 	 * Отвечает на вопрос! Время настало для сложной обработки?
