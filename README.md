@@ -1,5 +1,6 @@
-# Простейшая система уровней доступа test debug admin
+# Трёхуровневая система доступа test debug admin
 **Disclaimer:** Module is not complete and not ready for use yet.
+
 ```php
 	Access::admin(true); //exit to HTTP base authorization if fail
 	(bool) Access::admin();
