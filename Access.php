@@ -165,7 +165,7 @@ class Access {
 	}
 	public static function adminSetTime($t = null)
 	{
-		Once::exec('Infrajs::Access::adminSetTime', function(){
+		Once::exec('Infrajs::Access::adminSetTime', function () use ($t) {
 			if (is_null($t)) $t = time();
 			$adm = array('time' => $t);
 			Mem::set('infra_admin_time', $adm);

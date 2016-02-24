@@ -3,8 +3,8 @@ namespace infrajs\access;
 
 use infrajs\config\Config;
 
-if(!Access::adminTime() || Config::$install){
+if(!Access::adminTime()){
 	header('Infrajs-Access-Update:true');
-	Config::$install = true;
+	Config::update();
 	Access::adminSetTime();
 }
