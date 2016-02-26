@@ -1,7 +1,9 @@
 <?php
 namespace infrajs\access;
-use infrajs\config;
+use infrajs\update\Update;
 
-if (Config::$update) Access::adminSetTime();
+if (Update::$is) {
+	Access::adminSetTime();
+}
 
 ?>
