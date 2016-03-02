@@ -50,7 +50,6 @@ class Access {
 
 	public static function test($die = false)
 	{
-		
 		$is = self::isTest();
 		if ($is) Nostore::on();
 		if (!$die) return $is;
