@@ -134,7 +134,8 @@ class Access {
 
 		if (is_array($break)) {
 			Nostore::on();
-			$admin = ($break[0] === $_ADM_NAME && $break[1] === $_ADM_PASS);
+			//Если имя в конфиге указано, и переданные данные в массиве соответствуют
+			$admin = ($_ADM_NAME && $break[0] === $_ADM_NAME && $break[1] === $_ADM_PASS);
 			if ($admin) {
 				View::setCookie('infra_admin', $realkey);
 			} else {
@@ -149,7 +150,8 @@ class Access {
 				$admin = false;
 			} elseif ($break === true && !$admin) {
 				Nostore::on();
-				$admin = (@$_SERVER['PHP_AUTH_USER'] == $_ADM_NAME && @$_SERVER['PHP_AUTH_PW'] == $_ADM_PASS);
+				//Если имя в конфиге указано, и переданные данные по HTTP соответствуют
+				$admin = ($_ADM_NAME && @$_SERVER['PHP_AUTH_USER'] == $_ADM_NAME && @$_SERVER['PHP_AUTH_PW'] == $_ADM_PASS);
 				if ($admin) {
 					View::setCookie('infra_admin', $realkey);
 				} else {
