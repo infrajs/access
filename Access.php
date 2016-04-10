@@ -72,25 +72,25 @@ class Access {
 	}
 	public static function headers() {
 		if (Access::isTest()) {
-			error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
-			ini_set('display_errors', 1);
-			@header('Infrajs-Test:true');
+			//error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
+			//ini_set('display_errors', 1);
+			header('Infrajs-Test:true');
 		} else {
-			error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
-			@header('Infrajs-Test:false');
-			ini_set('display_errors', 0);
+			//error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT);
+			header('Infrajs-Test:false');
+			//ini_set('display_errors', 0);
 		}
 		if (Access::isDebug()) {
-			@header('Infrajs-Debug:true');
+			header('Infrajs-Debug:true');
 			Nostore::on(); //Браузер не кэширует no-store.
 		} else {
-			@header('Infrajs-Debug:false');
+			header('Infrajs-Debug:false');
 		}
 		if (Access::isAdmin()) {
-			@header('Infrajs-Admin:true');
+			header('Infrajs-Admin:true');
 			Access::adminSetTime();
 		} else {
-			@header('Infrajs-Admin:false');
+			header('Infrajs-Admin:false');
 		}
 	}
 	/**
