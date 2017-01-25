@@ -217,7 +217,7 @@ class Access {
 	{
 		//Запускается один раз для админа, остальные разы возвращает кэш из памяти
 		$name = 'Access::cache '.$name;
-		return Once::exec($name, function ($args, $name) use ($name, $fn, $re) {
+		return Once::exec($name, function ($args, $name) use ($fn, $re) {
 			$path = $name.'_'.Hash::make($args);
 			$data = Mem::get($path);
 			if (!$data) {
