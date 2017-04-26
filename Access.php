@@ -151,7 +151,11 @@ class Access {
 			} elseif ($break === true && !$admin) {
 				Nostore::on();
 				//Если имя в конфиге указано, и переданные данные по HTTP соответствуют
-				$admin = ($_ADM_NAME && @$_SERVER['PHP_AUTH_USER'] == $_ADM_NAME && @$_SERVER['PHP_AUTH_PW'] == $_ADM_PASS);
+				if (isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW'])) {
+					$admin = ($_ADM_NAME && $_SERVER['PHP_AUTH_USER'] == $_ADM_NAME && $_SERVER['PHP_AUTH_PW'] == $_ADM_PASS);
+				} else {
+					$admin = false;
+				}
 				if ($admin) {
 					View::setCookie('infra_admin', $realkey);
 				} else {
@@ -263,7 +267,7 @@ class Access {
 			/*
 				Warning: strtotime(): It is not safe to rely on the system's timezone settings. You are *required* to use the date.timezone setting or the date_default_timezone_set() function. In case you used any of those methods and you are still getting this warning, you most likely misspelled the timezone identifier. We selected the timezone 'UTC' for now, but please set date.timezone to select your timezone
 			*/
-			if (@strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) > $last_modified) {
+			if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) > $last_modified) {
 				if (empty($_SERVER['HTTP_IF_NONE_MATCH']) || $_SERVER['HTTP_IF_NONE_MATCH'] == $etag) {
 					//header('ETag: '.$etag);
 					//header('Last-Modified: '.$_SERVER['HTTP_IF_MODIFIED_SINCE']);
