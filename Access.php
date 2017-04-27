@@ -161,7 +161,7 @@ class Access {
 				} else {
 					header('WWW-Authenticate: Basic realm="Protected Area"');
 					header('HTTP/1.0 401 Unauthorized');
-					echo json_encode($ans);
+					echo json_encode($ans, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 					exit;
 				}
 			}
