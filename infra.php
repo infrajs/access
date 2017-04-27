@@ -2,6 +2,7 @@
 use infrajs\access\Access;
 use infrajs\ans\Ans;
 use infrajs\nostore\Nostore;
+use infrajs\template\Template;
 
 $action = Ans::GET('-access');
 
@@ -18,10 +19,7 @@ if ($action == 'false') {
 	//Устанавливает будто админ только что заходил... это мягко обновит кэши шаблонов и проверит изменения файлов
 }
 
-
-if (class_exists('Template')) {
-	Template::$scope['Access'] = array();
-	Template::$scope['Access']['adminTime'] = function () {
-		return Access::adminTime();
-	};
-}
+Template::$scope['Access'] = array();
+Template::$scope['Access']['adminTime'] = function () {
+	return Access::adminTime();
+};
