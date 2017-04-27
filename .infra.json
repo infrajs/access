@@ -1,7 +1,7 @@
 {
 	"conf":"\\infrajs\\access\\Access",
 	"dependencies":["mem","nostore"],
-	"js":"Access.js",
+	"js":["Access.js","infra.js"],
 	"test":["127.0.0.1","::1"],
 	"debug":["127.0.0.1","::1"],
 	"require":"infra.php",

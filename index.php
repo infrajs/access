@@ -11,6 +11,7 @@ if(!is_file('vendor/autoload.php')) {
 Nostore::on();
 
 $ans = array();
+$ans['time'] = Access::adminTime();
 $ans['test'] = Access::test();
 $ans['debug'] = Access::debug();
 $ans['admin'] = Access::admin();
