@@ -18,8 +18,3 @@ if ($action == 'false') {
 	Nostore::on();//Страница с таким параметром не кэшируется в браузере и её можно всегда спокойно вызывать
 	//Устанавливает будто админ только что заходил... это мягко обновит кэши шаблонов и проверит изменения файлов
 }
-
-Template::$scope['Access'] = array();
-Template::$scope['Access']['adminTime'] = function () {
-	return Access::adminTime();
-};
