@@ -7,6 +7,7 @@ use infrajs\nostore\Nostore;
 use infrajs\view\View;
 use infrajs\path\Path;
 
+
 class Access {
 	public static $conf = array(
 		"test"=>array("127.0.0.1","::1"),
