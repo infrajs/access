@@ -1,7 +1,6 @@
 {
 	"name": "infrajs/access",
 	"homepage":"https://github.com/infrajs/access",
-	"license": "GPL3",
 	"require":{
 		"infrajs/ans":"~1",
 		"infrajs/hash":"~1",
