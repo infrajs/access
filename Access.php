@@ -171,12 +171,10 @@ class Access {
 	}
 	public static function adminSetTime($t = null)
 	{
-		Once::exec('Infrajs::Access::adminSetTime', function () use ($t) {
-			if (is_null($t)) $t = time();
-			$adm = array('time' => $t);
-			Mem::set('infra_admin_time', $adm);
-			Once::exec('infra_admin_time', $adm['time']);
-		});
+		if (is_null($t)) $t = time();
+		Access::$time = $t;
+		$adm = array('time' => $t);
+		Mem::set('infra_admin_time', $adm);
 	}
 	/**
 	 * Отвечает на вопрос! Время настало для сложной обработки?
@@ -200,13 +198,14 @@ class Access {
 		return false;
 	}
 
+	public static $time = false;
 	/**
 	 * Время когда админ что-то сделал (время последнего обращения к функции infra_admin и её результате true)
 	 * Функция работает без параметров...возвращает дату последних изменений админа для всей системы
 	 */
 	public static function adminTime()
 	{
-		return Once::exec('infra_admin_time', function () {
+		if (Access::$time === false) {
 			$adm = Mem::get('infra_admin_time');
 			if (!$adm) {
 				$adm = array();
@@ -215,8 +214,9 @@ class Access {
 				$adm['time'] = 0;
 			}
 
-			return $adm['time'];
-		});
+			Access::$time = $adm['time'];
+		}
+		return Access::$time;
 	}
 	public static function cache($name, $fn, $args = array(), $re = false)
 	{
