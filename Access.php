@@ -4,6 +4,7 @@ use infrajs\hash\Hash;
 use infrajs\once\Once;
 use infrajs\mem\Mem;
 use infrajs\nostore\Nostore;
+use akiyatkin\boo\MemCache;
 use infrajs\view\View;
 use infrajs\path\Path;
 
@@ -218,7 +219,13 @@ class Access {
 		}
 		return Access::$time;
 	}
-	public static function cache($name, $fn, $args = array(), $re = false)
+	public static function cache($name, $fn, $args = array(), $re = false) {
+		return MemCache::func( function ($name, $args) use ($fn) {
+			return call_user_func_array($fn, $args);
+		}, [$name, $args], null, null, 1);
+		//}, [$name, $args],['infrajs\\access\\Access','adminTime'],[], 1);
+	}
+	/*public static function cache($name, $fn, $args = array(), $re = false)
 	{
 		//Запускается один раз для админа, остальные разы возвращает кэш из памяти
 		$name = 'Access::cache '.$name;
@@ -246,7 +253,7 @@ class Access {
 
 			return $data['result'];
 		}, array($args, $name), $re);
-	}
+	}*/
 	public static function modified($etag = '')
 	{
 		//$v изменение которой должно создавать новую копию кэша
