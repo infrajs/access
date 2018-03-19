@@ -49,11 +49,25 @@ class Access {
 		}
 		return $is;
 	}
-
+	
+	/**
+	* Активируем зависимость текущего кода 
+	* от того для кого этот код работает
+	**/
+	public static function nostore($is) {
+		if ($is) {
+			Nostore::on();
+		} else {
+			Once::$item['conds']['debug'] = array(
+				'fn' => ['infrajs\\access\\Access','getDebugTime'],
+				'args' => array()
+			);
+		}
+	}
 	public static function test($die = false)
 	{
 		$is = self::isTest();
-		if ($is) Nostore::on();
+		//Тестировщик Никак не влияет на кэш
 		if (!$die) return $is;
 		if ($is) return;
 		header('HTTP/1.0 403 Forbidden');
@@ -63,10 +77,7 @@ class Access {
 	public static function debug($die = false)
 	{
 		$is = self::isDebug();
-		if ($is) {
-			Nostore::on();
-			//self::adminSetTime();
-		}
+		Access::nostore($is);
 		if (!$die) return $is;
 		if ($is) return;
 		header('HTTP/1.0 403 Forbidden');
@@ -166,6 +177,8 @@ class Access {
 					echo json_encode($ans, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 					exit;
 				}
+			} else {
+				Access::nostore($admin);//Иногда сохраняем кэш иногда нет. Админ всегда проверяет кэш. А данный вызов добавляет проверку которая возвращает всегда true для админа
 			}
 		}
 		return $admin;
@@ -198,7 +211,11 @@ class Access {
 
 		return false;
 	}
-
+	public static function getDebugTime()
+	{
+		if (Access::isDebug()) return time();
+		else return 0;
+	}
 	public static $time = false;
 	/**
 	 * Время когда админ что-то сделал (время последнего обращения к функции infra_admin и её результате true)
@@ -220,6 +237,7 @@ class Access {
 		return Access::$time;
 	}
 	public static function cache($name, $fn, $args = array(), $re = false) {
+		Once::$nextgid = $name;
 		return MemCache::func( function ($name, $args) use ($fn) {
 			return call_user_func_array($fn, $args);
 		}, [$name, $args], null, null, 1);
