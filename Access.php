@@ -240,7 +240,7 @@ class Access {
 		Once::$nextgid = $name;
 		return MemCache::func( function ($name, $args) use ($fn) {
 			return call_user_func_array($fn, $args);
-		}, [$name, $args], null, null, 1);
+		}, [$name, $args], ['infrajs\\access\\Access','getDebugTime'], [], 1);
 		//}, [$name, $args],['infrajs\\access\\Access','adminTime'],[], 1);
 	}
 	/*public static function cache($name, $fn, $args = array(), $re = false)
