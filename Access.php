@@ -236,11 +236,12 @@ class Access {
 		}
 		return Access::$time;
 	}
+	public static function func($fn, $args = array()) {
+		return MemCache::func( $fn, $args, ['infrajs\\access\\Access','getDebugTime'], [], 1);
+	}
 	public static function cache($name, $fn, $args = array(), $re = false) {
 		Once::$nextgid = $name;
-		return MemCache::func( function ($name, $args) use ($fn) {
-			return call_user_func_array($fn, $args);
-		}, [$name, $args], ['infrajs\\access\\Access','getDebugTime'], [], 1);
+		return MemCache::func( $fn, $args, ['infrajs\\access\\Access','getDebugTime'], [], 1);
 		//}, [$name, $args],['infrajs\\access\\Access','adminTime'],[], 1);
 	}
 	/*public static function cache($name, $fn, $args = array(), $re = false)
