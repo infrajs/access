@@ -214,13 +214,18 @@ class Access {
 	public static function getDebugTime()
 	{
 		if (Access::isDebug()) return time();
-		else return 0;
+		else return adminTime();
 	}
 	public static $time = false;
 	/**
 	 * Время когда админ что-то сделал (время последнего обращения к функции infra_admin и её результате true)
 	 * Функция работает без параметров...возвращает дату последних изменений админа для всей системы
 	 */
+	public static function getAdminTime()
+	{
+		if (Access::isAdmin()) return time();
+		return adminTime();
+	}
 	public static function adminTime()
 	{
 		if (Access::$time === false) {
