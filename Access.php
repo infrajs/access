@@ -214,7 +214,7 @@ class Access {
 	public static function getDebugTime()
 	{
 		if (Access::isDebug()) return time();
-		else return adminTime();
+		else return Access::adminTime();
 	}
 	public static $time = false;
 	/**
