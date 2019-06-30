@@ -118,6 +118,8 @@ class Access {
 		}
 		$conf = static::$conf;
 		$data = $conf['admin'];
+		if(empty($data['login'])) return false;
+		if(empty($data['password'])) return false;
 		$_ADM_NAME = $data['login'];
 		$_ADM_PASS = $data['password'];
 		if (empty($_SERVER['HTTP_USER_AGENT'])) {
