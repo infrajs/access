@@ -139,6 +139,7 @@ class Access {
 	public static function admin($break = null, $ans = array('msg' => 'Требуется авторизация', 'result' => 0))
 	{
 		$data = static::$conf['admin'];
+		if(empty($data['login']) || empty($data['password'])) return false;
 		$_ADM_NAME = $data['login'];
 		$_ADM_PASS = $data['password'];
 		$admin = null;//Неизвестно
