@@ -11,5 +11,12 @@ $ans['test'] = Access::test();
 $ans['debug'] = Access::debug();
 $ans['admin'] = Access::admin();
 
+if (is_file('.git/index')) {
+	$ans['update'] = filemtime('composer.lock');
+} else if (is_file('composer.lock')) {
+	$ans['update'] = filemtime('composer.lock');
+} else {
+	$ans['update'] = filemtime(__FILE__);
+}
 
 return Ans::ret($ans);
