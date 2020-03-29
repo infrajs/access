@@ -12,7 +12,7 @@ $ans['debug'] = Access::debug();
 $ans['admin'] = Access::admin();
 
 if (is_file('.git/index')) {
-	$ans['update'] = filemtime('composer.lock');
+	$ans['update'] = filemtime('.git/index');
 } else if (is_file('composer.lock')) {
 	$ans['update'] = filemtime('composer.lock');
 } else {
