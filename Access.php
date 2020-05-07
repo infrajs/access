@@ -1,6 +1,5 @@
 <?php
 namespace infrajs\access;
-use infrajs\hash\Hash;
 use infrajs\once\Once;
 use infrajs\mem\Mem;
 use infrajs\nostore\Nostore;
@@ -252,35 +251,6 @@ class Access {
 		return MemCache::func( $fn, $args, ['infrajs\\access\\Access','getDebugTime'], [], 1);
 		//}, [$name, $args],['infrajs\\access\\Access','adminTime'],[], 1);
 	}
-	/*public static function cache($name, $fn, $args = array(), $re = false)
-	{
-		//Запускается один раз для админа, остальные разы возвращает кэш из памяти
-		$name = 'Access::cache '.$name;
-		return Once::exec($name, function ($args, $name) use ($fn, $re) {
-			$path = $name.'_'.Hash::make($args);
-			$data = Mem::get($path);
-			if (!$data) {
-				$data = array('time' => 0);
-			}
-			$execute = self::adminIsTime($data['time'], function () {
-				return true;
-			}, $re);
-
-			if ($execute) {
-				$cache = !Nostore::check(function () use (&$data, $fn, $args, $re) {
-					$data['result'] = call_user_func_array($fn, array_merge($args, array($re)));
-				});
-				if ($cache) {
-					$data['time'] = time();
-					Mem::set($path, $data);
-				} else {
-					Mem::delete($path);
-				}
-			}
-
-			return $data['result'];
-		}, array($args, $name), $re);
-	}*/
 	public static function modified($etag = '')
 	{
 		//$v изменение которой должно создавать новую копию кэша

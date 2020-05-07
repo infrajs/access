@@ -3,7 +3,6 @@
 	"homepage":"https://github.com/infrajs/access",
 	"require":{
 		"infrajs/ans":"~1",
-		"infrajs/hash":"~1",
 		"infrajs/once":"~1",
 		"infrajs/mem":"~1",
 		"infrajs/nostore":"~1",
