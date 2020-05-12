@@ -1,8 +1,6 @@
 {
 	"conf":"\\infrajs\\access\\Access",
 	"dependencies":["mem","nostore"],
-	"js":[],
-	"json":[""],
 	"test":["127.0.0.1","::1"],
 	"debug":["127.0.0.1","::1"],
 	"require":"infra.php",
