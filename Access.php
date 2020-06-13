@@ -239,9 +239,29 @@ class Access {
 				$adm['time'] = 0;
 			}
 
-			Access::$time = $adm['time'];
+			$update_time = Access::updateTime();
+			Access::$time = max($update_time, $adm['time']);
 		}
 		return Access::$time;
+	}
+
+	public static $update_time = false;
+	public static function updateTime()
+	{
+		if (Access::$update_time === false) {
+			$update_time = filemtime(__FILE__);
+			
+			if (is_file('.git/index')) {
+				$update_time = max($update_time, filemtime('.git/index'));
+			} 
+
+			if (is_file('composer.lock')) {
+				$update_time = max($update_time, filemtime('composer.lock'));
+			}
+
+			Access::$update_time = $update_time;
+		}
+		return Access::$update_time;
 	}
 	public static function func($fn, $args = array()) {
 		return MemCache::func( $fn, $args, ['infrajs\\access\\Access','getDebugTime'], [], 1);
@@ -272,7 +292,7 @@ class Access {
 			/*
 				Warning: strtotime(): It is not safe to rely on the system's timezone settings. You are *required* to use the date.timezone setting or the date_default_timezone_set() function. In case you used any of those methods and you are still getting this warning, you most likely misspelled the timezone identifier. We selected the timezone 'UTC' for now, but please set date.timezone to select your timezone
 			*/
-			if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) > $last_modified) {
+			if (strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) > $last_modified) {
 				if (empty($_SERVER['HTTP_IF_NONE_MATCH']) || $_SERVER['HTTP_IF_NONE_MATCH'] == $etag) {
 					//header('ETag: '.$etag);
 					//header('Last-Modified: '.$_SERVER['HTTP_IF_MODIFIED_SINCE']);

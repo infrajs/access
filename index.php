@@ -1,22 +1,19 @@
 <?php
-use infrajs\ans\Ans;
+//use infrajs\ans\Ans;
 use infrajs\access\Access;
-use infrajs\nostore\Nostore;
+//use infrajs\nostore\Nostore;
 
-Nostore::on();
+//Nostore::on();
 
 $ans = array();
 $ans['time'] = Access::adminTime();
 $ans['test'] = Access::test();
 $ans['debug'] = Access::debug();
 $ans['admin'] = Access::admin();
+$ans['update'] = Access::updateTime();
 
-if (is_file('.git/index')) {
-	$ans['update'] = filemtime('.git/index');
-} else if (is_file('composer.lock')) {
-	$ans['update'] = filemtime('composer.lock');
-} else {
-	$ans['update'] = filemtime(__FILE__);
-}
+header('Cache-Control: no-store');
+header('Content-type: application/javascript');
 
-return Ans::ret($ans);
+echo 'export default ';
+echo json_encode($ans, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);

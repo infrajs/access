@@ -1,13 +1,15 @@
+import AccessData from '/-access/'
+
 let Access = {}
 
 Access.admin = function () {
-	return Load.loadJSON('-access/')['admin'];
+	return AccessData['admin'];
 }
 Access.debug = function () {
-	return Load.loadJSON('-access/')['debug'];
+	return AccessData['debug'];
 }
 Access.adminTime = function () {
-	return Load.loadJSON('-access/')['time'];
+	return AccessData['time'];
 }
 Access.getDebugTime = function () {
 	if (Access.debug()) return time();
