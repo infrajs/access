@@ -1,9 +1,8 @@
 <?php
 namespace infrajs\access;
-use infrajs\once\Once;
 use infrajs\mem\Mem;
 use infrajs\nostore\Nostore;
-use akiyatkin\boo\MemCache;
+use infrajs\cache\Cache;
 use infrajs\view\View;
 use infrajs\path\Path;
 
@@ -54,14 +53,7 @@ class Access {
 	* от того для кого этот код работает
 	**/
 	public static function nostore($is) {
-		if ($is) {
-			Nostore::on();
-		} else {
-			Once::$item['conds']['debug'] = array(
-				'fn' => ['infrajs\\access\\Access','getDebugTime'],
-				'args' => array()
-			);
-		}
+		Nostore::on();
 	}
 	public static function test($die = false)
 	{
@@ -263,12 +255,8 @@ class Access {
 		}
 		return Access::$update_time;
 	}
-	public static function func($fn, $args = array()) {
-		return MemCache::func( $fn, $args, ['infrajs\\access\\Access','getDebugTime'], [], 1);
-	}
 	public static function cache($name, $fn, $args = array(), $re = false) {
-		Once::$nextgid = $name;
-		return MemCache::func( $fn, $args, ['infrajs\\access\\Access','getDebugTime'], [], 1);
+		return Cache::exec( ['cache/mem/infra_admin_time.json'], 'Access::cache'.$name, $fn, $args, $re);
 		//}, [$name, $args],['infrajs\\access\\Access','adminTime'],[], 1);
 	}
 	public static function modified($etag = '')
