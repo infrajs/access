@@ -256,8 +256,8 @@ class Access {
 		return Access::$update_time;
 	}
 	public static function cache($name, $fn, $args = array()) {
-		//$re = Access::isDebug();
-		$re = false;
+		$re = Access::isDebug();
+		//$re = false;
 		return Cache::exec( ['!mem/infra_admin_time.json'], 'Access::cache'.$name, $fn, $args, $re);
 		//}, [$name, $args],['infrajs\\access\\Access','adminTime'],[], 1);
 	}
