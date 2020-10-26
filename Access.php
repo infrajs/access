@@ -218,7 +218,7 @@ class Access {
 	public static function getAdminTime()
 	{
 		if (Access::isAdmin()) return time();
-		return adminTime();
+		return Access::adminTime();
 	}
 	public static function adminTime()
 	{
@@ -257,8 +257,7 @@ class Access {
 	}
 	public static function cache($name, $fn, $args = array()) {
 		$re = Access::isDebug();
-		//$re = false;
-		return Cache::exec( ['!mem/infra_admin_time.json'], 'Access::cache'.$name, $fn, $args, $re);
+		return Cache::exec( [true], 'Access::cache'.$name, $fn, $args, $re);
 		//}, [$name, $args],['infrajs\\access\\Access','adminTime'],[], 1);
 	}
 	public static function modified($etag = '')
